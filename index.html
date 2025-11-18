@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eduplex Dashboard</title>
+    <meta name="description" content="Codex Panel - Smart elevator monitoring dashboard">
+    <meta name="author" content="Codex Panel">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Codex Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1376,12 +1379,6 @@
                         <i class="fas fa-lock" style="margin-right: 8px; color: #667eea;"></i>Password
                     </label>
                     <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                </div>
-                <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #2196f3;">
-                    <p style="font-size: 12px; color: #1976d2; margin: 0;">
-                        <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
-                        <strong>Demo:</strong> Ingresa cualquier email y contraseña para acceder
-                    </p>
                 </div>
                 <div class="login-error" id="loginError">
                     Invalid email or password. Please try again.
@@ -4879,32 +4876,53 @@
 
     <script>
         // Login functionality
+        function setAuthState(isLoggedIn) {
+            const loginContainer = document.getElementById('loginContainer');
+            const dashboardContainer = document.getElementById('dashboardContainer');
+            if (isLoggedIn) {
+                document.documentElement.classList.add('logged-in');
+                document.documentElement.classList.remove('not-logged-in');
+                loginContainer.style.display = 'none';
+                dashboardContainer.classList.add('active');
+            } else {
+                document.documentElement.classList.add('not-logged-in');
+                document.documentElement.classList.remove('logged-in');
+                loginContainer.style.display = 'flex';
+                dashboardContainer.classList.remove('active');
+            }
+        }
+
         function handleLogin(event) {
             event.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
             const loginError = document.getElementById('loginError');
+            const validEmail = 'admin@codex.com';
+            const validPassword = '12345';
+
+            const email = (emailInput.value || '').trim().toLowerCase();
+            const password = (passwordInput.value || '').trim();
+
+            if (!email || !password) {
+                loginError.textContent = 'Please enter both email and password.';
+                loginError.style.display = 'block';
+                return;
+            }
             
-            // Simple validation (you can add more complex authentication here)
-            if (email && password) {
-                // Save login state
+            if (email === validEmail && password === validPassword) {
                 localStorage.setItem('isLoggedIn', 'true');
-                // Hide login and show dashboard
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('dashboardContainer').classList.add('active');
+                setAuthState(true);
                 loginError.style.display = 'none';
             } else {
+                loginError.textContent = 'Invalid email or password. Please try again.';
                 loginError.style.display = 'block';
             }
         }
 
         // Check if user is already logged in (optional - using localStorage)
         document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            if (isLoggedIn === 'true') {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('dashboardContainer').classList.add('active');
-            }
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            setAuthState(isLoggedIn);
         });
 
         // Logout Modal functionality
@@ -4921,8 +4939,7 @@
             // Clear login state
             localStorage.removeItem('isLoggedIn');
             // Hide dashboard and show login
-            document.getElementById('dashboardContainer').classList.remove('active');
-            document.getElementById('loginContainer').style.display = 'flex';
+            setAuthState(false);
             // Clear login form
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
