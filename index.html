@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -1293,6 +1293,71 @@
             color: #e74c3c;
             font-weight: 600;
         }
+
+        /* Color Picker Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .modal-close:hover {
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .quick-color {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .quick-color:hover {
+            transform: scale(1.1);
+            border-color: #1a1a2e;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .quick-color:active {
+            transform: scale(0.95);
+        }
+
+        #colorPickerBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        #colorPickerBtn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
     </style>
     <script>
         // Check login state immediately in head - before body renders
@@ -1438,7 +1503,7 @@
             </a>
             <a href="#" class="menu-item" id="supportMenuItem" onclick="showSupport(event)">
                 <i class="fas fa-life-ring"></i>
-                Support
+                Service Request
             </a>
             <a href="#" class="menu-item" onclick="openLogoutModal(event)">
                 <i class="fas fa-sign-out-alt"></i>
@@ -1507,7 +1572,7 @@
                         <h2>Recent Activity</h2>
                         <button onclick="showReports(event)"
                             style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s;">
-                            Ver todos
+                            View all
                         </button>
                     </div>
                     <div class="notifications-list" id="recentActivityList">
@@ -1521,7 +1586,7 @@
                         <h2>Registered Users</h2>
                         <button onclick="showUsers(event)"
                             style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s;">
-                            Ver todos
+                            View all
                         </button>
                     </div>
                     <div class="schedule-list" id="randomUsersList">
@@ -1543,7 +1608,7 @@
                 <h3>Professional Plan</h3>
                 <div id="planStatusText" class="plan-status-badge">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <span>Cargando estado del plan...</span>
+                    <span>Loading plan status...</span>
                 </div>
                 <div id="planActivateButton">
                     <a href="#" onclick="openWhatsApp(); return false;" class="premium-btn">
@@ -1558,7 +1623,7 @@
 
             <div class="assignments-card">
                 <div class="card-header">
-                    <h3>URL de Implementación</h3>
+                    <h3>Implementation URL</h3>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -1604,9 +1669,9 @@
                     style="width: 60px; height: 60px; margin: 0 auto 20px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-exclamation-triangle" style="font-size: 30px; color: #dc2626;"></i>
                 </div>
-                <h2 style="margin: 0 0 15px 0; color: #1a1a2e; font-size: 24px;">Límite Alcanzado</h2>
+                <h2 style="margin: 0 0 15px 0; color: #1a1a2e; font-size: 24px;">Limit Reached</h2>
                 <p style="margin: 0 0 25px 0; color: #666; font-size: 15px; line-height: 1.5;">
-                    Has llegado al límite de URLs disponibles. No se pueden generar más URLs de implementación.
+                    You have reached the limit of available URLs. No more implementation URLs can be generated.
                 </p>
                 <button onclick="closeLimitModal()"
                     style="background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
@@ -1793,14 +1858,14 @@
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
                                     <i class="fas fa-exclamation-triangle"
-                                        style="margin-right: 8px; color: #667eea;"></i>signal1
+                                        style="margin-right: 8px; color: #667eea;"></i>input1
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertOutOfService" class="company-name-input"
-                                        placeholder="e.g., Fuera de servicio" style="flex: 1;">
+                                        placeholder="e.g., Out of service" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal1" checked
+                                        <input type="checkbox" id="activeInput1" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -1809,14 +1874,14 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
-                                    <i class="fas fa-fire" style="margin-right: 8px; color: #667eea;"></i>signal2
+                                    <i class="fas fa-fire" style="margin-right: 8px; color: #667eea;"></i>input2
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertFireService" class="company-name-input"
-                                        placeholder="e.g., Servicio de incendio" style="flex: 1;">
+                                        placeholder="e.g., Fire service" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal2" checked
+                                        <input type="checkbox" id="activeInput2" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -1825,14 +1890,14 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
-                                    <i class="fas fa-phone" style="margin-right: 8px; color: #667eea;"></i>signal3
+                                    <i class="fas fa-phone" style="margin-right: 8px; color: #667eea;"></i>input3
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertPhoneComm" class="company-name-input"
-                                        placeholder="e.g., Comunicación telefónica" style="flex: 1;">
+                                        placeholder="e.g., Phone communication" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal3" checked
+                                        <input type="checkbox" id="activeInput3" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -1841,14 +1906,14 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
-                                    <i class="fas fa-tint" style="margin-right: 8px; color: #667eea;"></i>signal4
+                                    <i class="fas fa-tint" style="margin-right: 8px; color: #667eea;"></i>input4
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertPitFlooded" class="company-name-input"
-                                        placeholder="e.g., Foso inundado" style="flex: 1;">
+                                        placeholder="e.g., Flooded pit" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal4" checked
+                                        <input type="checkbox" id="activeInput4" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -1857,14 +1922,14 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
-                                    <i class="fas fa-building" style="margin-right: 8px; color: #667eea;"></i>signal5
+                                    <i class="fas fa-building" style="margin-right: 8px; color: #667eea;"></i>input5
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertAtFloor" class="company-name-input"
-                                        placeholder="e.g., En piso" style="flex: 1;">
+                                        placeholder="e.g., At floor" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal5" checked
+                                        <input type="checkbox" id="activeInput5" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -1873,14 +1938,14 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <label
                                     style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
-                                    <i class="fas fa-arrows-alt" style="margin-right: 8px; color: #667eea;"></i>signal6
+                                    <i class="fas fa-arrows-alt" style="margin-right: 8px; color: #667eea;"></i>input6
                                 </label>
                                 <div style="display: flex; gap: 10px; align-items: center;">
                                     <input type="text" id="customAlertMoving" class="company-name-input"
-                                        placeholder="e.g., En movimiento" style="flex: 1;">
+                                        placeholder="e.g., Moving" style="flex: 1;">
                                     <label
                                         style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; white-space: nowrap;">
-                                        <input type="checkbox" id="activeSignal6" checked
+                                        <input type="checkbox" id="activeInput6" checked
                                             style="width: 18px; height: 18px; cursor: pointer;">
                                         <span style="font-size: 13px; color: #667eea; font-weight: 600;">Active</span>
                                     </label>
@@ -2143,6 +2208,11 @@
 
         <div class="company-data-section" id="companyDataSection" style="display: none;">
             <div class="header">
+                <button onclick="openColorPickerModal()" id="colorPickerBtn"
+                    style="position: absolute; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-palette"></i>
+                    Color Picker
+                </button>
                 <h1>Company Data</h1>
             </div>
             <div style="padding: 40px;">
@@ -2224,7 +2294,7 @@
                 <!-- Email Configuration Section - Alerta -->
                 <div style="margin-top: 40px;">
                     <div class="section-header" style="margin-bottom: 25px;">
-                        <h2>Configuración de Email de Alerta</h2>
+                        <h2>Alert Email Configuration</h2>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px;">
                         <div class="input-card" style="grid-column: span 2;">
@@ -2271,7 +2341,7 @@
                             <button class="update-btn" onclick="updateEmailConfig('alerta', event)"
                                 style="width: 100%; padding: 12px; font-size: 16px;">
                                 <i class="fas fa-save" style="margin-right: 8px;"></i>
-                                Guardar Configuración de Email de Alerta
+                                Save Alert Email Configuration
                             </button>
                         </div>
                     </div>
@@ -2280,7 +2350,7 @@
                 <!-- Email Configuration Section - Resuelto -->
                 <div style="margin-top: 40px;">
                     <div class="section-header" style="margin-bottom: 25px;">
-                        <h2>Configuración de Email de Resuelto</h2>
+                        <h2>Resolved Email Configuration</h2>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px;">
                         <div class="input-card" style="grid-column: span 2;">
@@ -2327,7 +2397,7 @@
                             <button class="update-btn" onclick="updateEmailConfig('resuelto', event)"
                                 style="width: 100%; padding: 12px; font-size: 16px;">
                                 <i class="fas fa-save" style="margin-right: 8px;"></i>
-                                Guardar Configuración de Email de Resuelto
+                                Save Resolved Email Configuration
                             </button>
                         </div>
                     </div>
@@ -2755,7 +2825,7 @@
                 const numero = '57326695';
                 // Use WhatsApp API format: https://api.whatsapp.com/send
                 // This format handles emojis better than wa.me
-                const mensaje = '¡Hola! 🔑 Quiero activar mi plan profesional 📡 para acceder a todas las funcionalidades premium ✅ ¿Podrías ayudarme con el proceso? ⚙️';
+                const mensaje = 'Hello! 🔑 I want to activate my professional plan 📡 to access all premium features ✅ Could you help me with the process? ⚙️';
                 const url = 'https://api.whatsapp.com/send?phone=' + numero + '&text=' + encodeURIComponent(mensaje);
                 window.open(url, '_blank');
             }
@@ -2817,11 +2887,11 @@
 
                 if (planStatus && planStatus.isProfessional && planStatus.status === 'active') {
                     planStatusText.className = 'plan-status-badge active';
-                    planStatusText.innerHTML = '<i class="fas fa-check-circle"></i><span>Plan Professional Activo</span>';
+                    planStatusText.innerHTML = '<i class="fas fa-check-circle"></i><span>Professional Plan Active</span>';
                     planActivateButton.style.display = 'none';
                 } else {
                     planStatusText.className = 'plan-status-badge inactive';
-                    planStatusText.innerHTML = '<i class="fas fa-times-circle"></i><span>Plan Professional Inactivo</span>';
+                    planStatusText.innerHTML = '<i class="fas fa-times-circle"></i><span>Professional Plan Inactive</span>';
                     planActivateButton.style.display = 'block';
                 }
             }
@@ -2869,7 +2939,7 @@
                 }
 
                 // Create text content with all URLs
-                let textContent = 'URLs de Implementación\n';
+                let textContent = 'Implementation URLs\n';
                 textContent += '=======================\n\n';
 
                 usedUrls.forEach((url, index) => {
@@ -2928,7 +2998,7 @@
                 const usedUrls = getUsedUrls();
 
                 if (usedUrls.length === 0) {
-                    listContainer.innerHTML = '<p style="text-align: center; color: #999; font-size: 13px; padding: 20px;">No hay URLs implementadas aún</p>';
+                    listContainer.innerHTML = '<p style="text-align: center; color: #999; font-size: 13px; padding: 20px;">No URLs implemented yet</p>';
                     return;
                 }
 
@@ -3017,7 +3087,7 @@
                 // Show loading state with button
                 const generateBtn = event.target.closest('button');
                 const originalBtnText = generateBtn.innerHTML;
-                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Generando...';
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Generating...';
                 generateBtn.disabled = true;
 
                 try {
@@ -3026,7 +3096,7 @@
                     const result = await response.json();
 
                     if (!result.success || !result.data || !Array.isArray(result.data)) {
-                        throw new Error('Error al obtener URLs de la API');
+                        throw new Error('Error getting URLs from API');
                     }
 
                     // Get used URLs
@@ -3059,7 +3129,7 @@
                     // Show success message
                     const successMsg = document.createElement('div');
                     successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #22c55e; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; font-size: 14px;';
-                    successMsg.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i>URL generada exitosamente';
+                    successMsg.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i>URL generated successfully';
                     document.body.appendChild(successMsg);
                     setTimeout(() => {
                         successMsg.remove();
@@ -3069,7 +3139,7 @@
                     console.error('Error generating implementation URL:', error);
                     generateBtn.innerHTML = originalBtnText;
                     generateBtn.disabled = false;
-                    alert('Error al generar la URL: ' + error.message);
+                    alert('Error generating URL: ' + error.message);
                 }
             }
 
@@ -3276,7 +3346,7 @@
                 return new Promise((resolve, reject) => {
                     try {
                         if (!CUSTOM_EMAILS_API_URL) {
-                            reject(new Error('CUSTOM_EMAILS_API_URL no está configurada'));
+                            reject(new Error('CUSTOM_EMAILS_API_URL is not configured'));
                             return;
                         }
 
@@ -3456,6 +3526,71 @@
     </div>
     <!-- End Dashboard Container -->
 
+    <!-- Color Picker Modal -->
+    <div id="colorPickerModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; width: 90%; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <button class="modal-close" onclick="closeColorPickerModal()">&times;</button>
+            <h2 style="color: #1a1a2e; margin-bottom: 20px; font-size: 24px;">
+                <i class="fas fa-palette" style="margin-right: 10px; color: #667eea;"></i>
+                Color Picker
+            </h2>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
+                    Select a Color:
+                </label>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <input type="color" id="colorInput" value="#667eea" 
+                        style="width: 80px; height: 80px; border: 3px solid #e0e0e0; border-radius: 10px; cursor: pointer;">
+                    <div style="flex: 1;">
+                        <input type="text" id="hexColorDisplay" value="#667eea" readonly
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 18px; font-weight: 600; text-align: center; font-family: monospace; background: #f8f9fa;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; font-size: 14px;">
+                    Quick Colors:
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;">
+                    <div class="quick-color" data-color="#667eea" style="background: #667eea;"></div>
+                    <div class="quick-color" data-color="#764ba2" style="background: #764ba2;"></div>
+                    <div class="quick-color" data-color="#f093fb" style="background: #f093fb;"></div>
+                    <div class="quick-color" data-color="#4facfe" style="background: #4facfe;"></div>
+                    <div class="quick-color" data-color="#00f2fe" style="background: #00f2fe;"></div>
+                    <div class="quick-color" data-color="#43e97b" style="background: #43e97b;"></div>
+                    <div class="quick-color" data-color="#38f9d7" style="background: #38f9d7;"></div>
+                    <div class="quick-color" data-color="#fa709a" style="background: #fa709a;"></div>
+                    <div class="quick-color" data-color="#fee140" style="background: #fee140;"></div>
+                    <div class="quick-color" data-color="#30cfd0" style="background: #30cfd0;"></div>
+                    <div class="quick-color" data-color="#a8edea" style="background: #a8edea;"></div>
+                    <div class="quick-color" data-color="#ff6a00" style="background: #ff6a00;"></div>
+                    <div class="quick-color" data-color="#ee0979" style="background: #ee0979;"></div>
+                    <div class="quick-color" data-color="#ff6a00" style="background: #ff6a00;"></div>
+                    <div class="quick-color" data-color="#c71d6f" style="background: #c71d6f;"></div>
+                    <div class="quick-color" data-color="#d4418e" style="background: #d4418e;"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="copyHexColor()" 
+                    style="flex: 1; background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    <i class="fas fa-copy" style="margin-right: 8px;"></i>
+                    Copy HEX
+                </button>
+                <button onclick="closeColorPickerModal()" 
+                    style="flex: 1; background: #95a5a6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Close
+                </button>
+            </div>
+
+            <div id="colorCopyMsg" style="margin-top: 15px; text-align: center; font-size: 13px; font-weight: 600; color: #27ae60; display: none;">
+                <i class="fas fa-check-circle"></i> Color copied to clipboard!
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden form for Company Data API submission -->
     <form id="apiForm" method="POST"
         action="https://script.google.com/macros/s/AKfycbyMB7QouKTWnRwNzxhE9xgrZaXY6GATvTF-fsfaR3gFRE6tLJk3Fnw_ta6lRnBKD0_q/exec"
@@ -3492,7 +3627,7 @@
     <form id="deleteUserForm"
         action="https://script.google.com/macros/s/AKfycbxUleHuPBZ9FxPX8_p2bZz63NFTpI7oUWd8qX6dP2ktH6LonR7YULPLoCPW28Avv-KArQ/exec"
         method="post" target="hiddenUserDeleteIframe" style="display: none;">
-        <input type="email" name="correo" id="deleteUserEmail" placeholder="Correo del usuario a eliminar" required="">
+        <input type="email" name="correo" id="deleteUserEmail" placeholder="Email of user to delete" required="">
         <input type="hidden" name="action" value="delete_user">
     </form>
 
@@ -3572,14 +3707,14 @@
                     style="width: 60px; height: 60px; background: linear-gradient(135deg, #ef5350 0%, #c62828 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
                     <i class="fas fa-sign-out-alt" style="color: white; font-size: 28px;"></i>
                 </div>
-                <h2 style="margin: 0; color: #1a1a2e; font-size: 24px;">Cerrar Sesión</h2>
+                <h2 style="margin: 0; color: #1a1a2e; font-size: 24px;">Logout</h2>
                 <p style="color: #888; font-size: 14px; margin-top: 10px;">¿Estás seguro de que deseas cerrar sesión?
                 </p>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 25px;">
                 <button onclick="closeLogoutModal()"
                     style="flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #e0e0e0; background: white; color: #1a1a2e; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
-                    Cancelar
+                    Cancel
                 </button>
                 <button onclick="handleLogout()"
                     style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: linear-gradient(135deg, #ef5350 0%, #c62828 100%); color: white; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(239, 83, 80, 0.3);">
@@ -3652,42 +3787,42 @@
             <div id="elevator-statuses" style="margin-bottom: 20px;">
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal1</span>
+                    <span>input1</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NORMAL
                     </span>
                 </div>
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal2</span>
+                    <span>input2</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NORMAL
                     </span>
                 </div>
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal3</span>
+                    <span>input3</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NORMAL
                     </span>
                 </div>
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal4</span>
+                    <span>input4</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NORMAL
                     </span>
                 </div>
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal5</span>
+                    <span>input5</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NO
                     </span>
                 </div>
                 <div class="status-item"
                     style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
-                    <span>signal6</span>
+                    <span>input6</span>
                     <span class="false" style="color: #27ae60; font-weight: 600;">
                         NO
                     </span>
@@ -3715,8 +3850,8 @@
         // API URL for support IDs
         const SUPPORT_API_URL = 'https://script.google.com/macros/s/AKfycbzPbNKPbZGovmHraMO7JpAdFrNDx_vhH_U42DrsyvOZwMA2qliC6gqO9_MRg3wFUGlE/exec';
 
-        // Variable to track if signal update is in progress
-        let isSignalUpdateInProgress = false;
+        // Variable to track if input update is in progress
+        let isInputUpdateInProgress = false;
 
         // Hidden form and iframe for custom alert names
         const hiddenCustomAlertForm = document.createElement('form');
@@ -3756,12 +3891,12 @@
                                             <i class="fas fa-mobile-alt" style="margin-right: 8px; color: #667eea;"></i>${deviceId}
                                         </h4>
                                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
-                                            ${item.out_of_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal1:</strong> <span style="color: #667eea;">${item.out_of_service}</span></div>` : ''}
-                                            ${item.fire_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal2:</strong> <span style="color: #667eea;">${item.fire_service}</span></div>` : ''}
-                                            ${item.phone_comm ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal3:</strong> <span style="color: #667eea;">${item.phone_comm}</span></div>` : ''}
-                                            ${item.pit_flooded ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal4:</strong> <span style="color: #667eea;">${item.pit_flooded}</span></div>` : ''}
-                                            ${item.at_floor ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal5:</strong> <span style="color: #667eea;">${item.at_floor}</span></div>` : ''}
-                                            ${item.moving ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>signal6:</strong> <span style="color: #667eea;">${item.moving}</span></div>` : ''}
+                                            ${item.out_of_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input1:</strong> <span style="color: #667eea;">${item.out_of_service}</span></div>` : ''}
+                                            ${item.fire_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input2:</strong> <span style="color: #667eea;">${item.fire_service}</span></div>` : ''}
+                                            ${item.phone_comm ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input3:</strong> <span style="color: #667eea;">${item.phone_comm}</span></div>` : ''}
+                                            ${item.pit_flooded ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input4:</strong> <span style="color: #667eea;">${item.pit_flooded}</span></div>` : ''}
+                                            ${item.at_floor ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input5:</strong> <span style="color: #667eea;">${item.at_floor}</span></div>` : ''}
+                                            ${item.moving ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;"><strong>input6:</strong> <span style="color: #667eea;">${item.moving}</span></div>` : ''}
                                         </div>
                                     </div>
                                     <button onclick="deleteCustomAlert('${deviceId.replace(/'/g, "\\'")}')" style="padding: 8px 16px; border-radius: 8px; border: 2px solid #ef5350; background: white; color: #ef5350; font-weight: 600; cursor: pointer; font-size: 13px; transition: all 0.3s; margin-left: 15px;">
@@ -4170,14 +4305,14 @@
 
         // Function to format field name (replace underscores with spaces)
         function formatFieldName(fieldName) {
-            // Map original field names to signal1-signal6
+            // Map original field names to input1-input6
             const fieldMapping = {
-                'OUT_OF_SERVICE': 'signal1',
-                'FIRE_SERVICE': 'signal2',
-                'PHONE_COMM': 'signal3',
-                'PIT_FLOODED': 'signal4',
-                'AT_FLOOR': 'signal5',
-                'MOVING': 'signal6'
+                'OUT_OF_SERVICE': 'input1',
+                'FIRE_SERVICE': 'input2',
+                'PHONE_COMM': 'input3',
+                'PIT_FLOODED': 'input4',
+                'AT_FLOOR': 'input5',
+                'MOVING': 'input6'
             };
 
             // Return mapped name if exists, otherwise format normally
@@ -5815,7 +5950,7 @@
                 
                 formId = 'emailConfigAlertaForm';
                 iframeId = 'hiddenEmailConfigAlertaIframe';
-                buttonText = 'Guardar Configuración de Email de Alerta';
+                buttonText = 'Save Alert Email Configuration';
             } else if (tipo === 'resuelto') {
                 // Get resuelto values
                 emailTitle = document.getElementById('emailTitleResueltoInput').value || '';
@@ -5831,9 +5966,9 @@
                 
                 formId = 'emailConfigResueltoForm';
                 iframeId = 'hiddenEmailConfigResueltoIframe';
-                buttonText = 'Guardar Configuración de Email de Resuelto';
+                buttonText = 'Save Resolved Email Configuration';
             } else {
-                console.error('Tipo de email no válido:', tipo);
+                console.error('Invalid email type:', tipo);
                 return;
             }
 
@@ -5843,7 +5978,7 @@
                 // Show success message
                 const button = event.target;
                 const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>¡Configuración Guardada!';
+                button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Configuration Saved!';
                 button.style.background = '#22c55e';
                 setTimeout(() => {
                     button.innerHTML = originalText;
@@ -5862,8 +5997,8 @@
             // Fallback timeout in case iframe onload doesn't fire
             setTimeout(() => {
                 const button = event.target;
-                if (button.innerHTML.includes('Guardar')) {
-                    button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>¡Configuración Guardada!';
+                if (button.innerHTML.includes('Save')) {
+                    button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Configuration Saved!';
                     button.style.background = '#22c55e';
                     setTimeout(() => {
                         button.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>' + buttonText;
@@ -6306,7 +6441,7 @@
             }
         }
 
-        // Variable para almacenar el email del usuario a eliminar
+        // Variable to store the email of the user to delete
         let userEmailToDelete = '';
 
         // Delete user - abre modal de confirmación
@@ -6811,12 +6946,12 @@
                 document.getElementById('customAlertStatusFalse').value = '';
                 document.getElementById('customAlertStatusTrue').value = '';
                 // Reset checkboxes to checked
-                document.getElementById('activeSignal1').checked = true;
-                document.getElementById('activeSignal2').checked = true;
-                document.getElementById('activeSignal3').checked = true;
-                document.getElementById('activeSignal4').checked = true;
-                document.getElementById('activeSignal5').checked = true;
-                document.getElementById('activeSignal6').checked = true;
+                document.getElementById('activeInput1').checked = true;
+                document.getElementById('activeInput2').checked = true;
+                document.getElementById('activeInput3').checked = true;
+                document.getElementById('activeInput4').checked = true;
+                document.getElementById('activeInput5').checked = true;
+                document.getElementById('activeInput6').checked = true;
             }
         }
 
@@ -6832,16 +6967,16 @@
             const atFloor = document.getElementById('customAlertAtFloor').value.trim();
             const moving = document.getElementById('customAlertMoving').value.trim();
 
-            // Get active signals
-            const activeSignals = [];
-            if (document.getElementById('activeSignal1').checked) activeSignals.push('signal1');
-            if (document.getElementById('activeSignal2').checked) activeSignals.push('signal2');
-            if (document.getElementById('activeSignal3').checked) activeSignals.push('signal3');
-            if (document.getElementById('activeSignal4').checked) activeSignals.push('signal4');
-            if (document.getElementById('activeSignal5').checked) activeSignals.push('signal5');
-            if (document.getElementById('activeSignal6').checked) activeSignals.push('signal6');
+            // Get active inputs
+            const activeInputs = [];
+            if (document.getElementById('activeInput1').checked) activeInputs.push('input1');
+            if (document.getElementById('activeInput2').checked) activeInputs.push('input2');
+            if (document.getElementById('activeInput3').checked) activeInputs.push('input3');
+            if (document.getElementById('activeInput4').checked) activeInputs.push('input4');
+            if (document.getElementById('activeInput5').checked) activeInputs.push('input5');
+            if (document.getElementById('activeInput6').checked) activeInputs.push('input6');
 
-            const activeAlert = activeSignals.join(',');
+            const activeAlert = activeInputs.join(',');
 
             if (!deviceId) {
                 alert('Please enter a Device ID');
@@ -6920,16 +7055,16 @@
                         const deviceId = item.id || 'Unknown';
                         const escapedDeviceId = deviceId.replace(/'/g, "\\'");
 
-                        // Parse active_alert to get which signals are active
-                        const activeSignals = item.active_alert 
+                        // Parse active_alert to get which inputs are active
+                        const activeInputs = item.active_alert 
                             ? item.active_alert.split(',').map(s => s.trim()).filter(s => s)
                             : [];
-                        const isSignal1Active = activeSignals.includes('signal1');
-                        const isSignal2Active = activeSignals.includes('signal2');
-                        const isSignal3Active = activeSignals.includes('signal3');
-                        const isSignal4Active = activeSignals.includes('signal4');
-                        const isSignal5Active = activeSignals.includes('signal5');
-                        const isSignal6Active = activeSignals.includes('signal6');
+                        const isInput1Active = activeInputs.includes('input1');
+                        const isInput2Active = activeInputs.includes('input2');
+                        const isInput3Active = activeInputs.includes('input3');
+                        const isInput4Active = activeInputs.includes('input4');
+                        const isInput5Active = activeInputs.includes('input5');
+                        const isInput6Active = activeInputs.includes('input6');
 
                         const alertHTML = `
                             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
@@ -6939,21 +7074,21 @@
                                             <i class="fas fa-mobile-alt" style="margin-right: 8px; color: #667eea;"></i>${deviceId}
                                         </h4>
                                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
-                                            ${item.out_of_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal1Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal1', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal1:</strong> <span style="color: #667eea;">${item.out_of_service}</span></div>` : ''}
-                                            ${item.fire_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal2Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal2', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal2:</strong> <span style="color: #667eea;">${item.fire_service}</span></div>` : ''}
-                                            ${item.phone_comm ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal3Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal3', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal3:</strong> <span style="color: #667eea;">${item.phone_comm}</span></div>` : ''}
-                                            ${item.pit_flooded ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal4Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal4', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal4:</strong> <span style="color: #667eea;">${item.pit_flooded}</span></div>` : ''}
-                                            ${item.at_floor ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal5Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal5', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal5:</strong> <span style="color: #667eea;">${item.at_floor}</span></div>` : ''}
-                                            ${item.moving ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isSignal6Active ? 'checked' : ''} onclick="toggleSignalActive('${escapedDeviceId}', 'signal6', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>signal6:</strong> <span style="color: #667eea;">${item.moving}</span></div>` : ''}
+                                            ${item.out_of_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput1Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input1', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input1:</strong> <span style="color: #667eea;">${item.out_of_service}</span></div>` : ''}
+                                            ${item.fire_service ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput2Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input2', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input2:</strong> <span style="color: #667eea;">${item.fire_service}</span></div>` : ''}
+                                            ${item.phone_comm ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput3Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input3', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input3:</strong> <span style="color: #667eea;">${item.phone_comm}</span></div>` : ''}
+                                            ${item.pit_flooded ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput4Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input4', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input4:</strong> <span style="color: #667eea;">${item.pit_flooded}</span></div>` : ''}
+                                            ${item.at_floor ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput5Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input5', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input5:</strong> <span style="color: #667eea;">${item.at_floor}</span></div>` : ''}
+                                            ${item.moving ? `<div style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" ${isInput6Active ? 'checked' : ''} onclick="toggleInputActive('${escapedDeviceId}', 'input6', this.checked)" style="width: 18px; height: 18px; cursor: pointer;"><strong>input6:</strong> <span style="color: #667eea;">${item.moving}</span></div>` : ''}
                                         </div>
                                         ${item.active_alert ? `
                                             <div style="margin-top: 10px; padding: 8px 12px; background: #e8f5e9; border-radius: 6px; display: inline-block;">
-                                                <strong style="color: #2e7d32;">Active Signals:</strong> 
+                                                <strong style="color: #2e7d32;">Active Inputs:</strong> 
                                                 <span style="color: #2e7d32;">${item.active_alert}</span>
                                             </div>
                                         ` : `
                                             <div style="margin-top: 10px; padding: 8px 12px; background: #fee2e2; border-radius: 6px; display: inline-block;">
-                                                <strong style="color: #dc2626;">No Active Signals</strong>
+                                                <strong style="color: #dc2626;">No Active Inputs</strong>
                                             </div>
                                         `}
                                     </div>
@@ -6980,17 +7115,17 @@
         }
 
         // Toggle Signal Active State
-        async function toggleSignalActive(deviceId, signalName, isChecked) {
+        async function toggleInputActive(deviceId, inputName, isChecked) {
             // Block if update is in progress
-            if (isSignalUpdateInProgress) {
+            if (isInputUpdateInProgress) {
                 // Revert checkbox state - find the checkbox that was clicked
-                const checkboxes = document.querySelectorAll(`#customAlertsList input[onclick*="toggleSignalActive('${deviceId.replace(/'/g, "\\'")}', '${signalName}'"]`);
+                const checkboxes = document.querySelectorAll(`#customAlertsList input[onclick*="toggleInputActive('${deviceId.replace(/'/g, "\\'")}', '${inputName}'"]`);
                 checkboxes.forEach(cb => cb.checked = !isChecked);
                 return;
             }
 
             // Set update in progress and disable all checkboxes
-            isSignalUpdateInProgress = true;
+            isInputUpdateInProgress = true;
             const allCheckboxes = document.querySelectorAll('#customAlertsList input[type="checkbox"]');
             allCheckboxes.forEach(cb => cb.disabled = true);
 
@@ -7002,7 +7137,7 @@
                 if (!result.success || !result.data) {
                     alert('Error loading device data');
                     // Re-enable checkboxes
-                    isSignalUpdateInProgress = false;
+                    isInputUpdateInProgress = false;
                     allCheckboxes.forEach(cb => cb.disabled = false);
                     return;
                 }
@@ -7012,33 +7147,33 @@
                 if (!device) {
                     alert('Device not found');
                     // Re-enable checkboxes
-                    isSignalUpdateInProgress = false;
+                    isInputUpdateInProgress = false;
                     allCheckboxes.forEach(cb => cb.disabled = false);
                     return;
                 }
 
-                // Parse current active signals - only include valid signal names
-                let activeSignals = device.active_alert 
-                    ? device.active_alert.split(',').map(s => s.trim()).filter(s => s && (s.startsWith('signal') && ['signal1', 'signal2', 'signal3', 'signal4', 'signal5', 'signal6'].includes(s)))
+                // Parse current active inputs - only include valid input names
+                let activeInputs = device.active_alert 
+                    ? device.active_alert.split(',').map(s => s.trim()).filter(s => s && (s.startsWith('input') && ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'].includes(s)))
                     : [];
 
-                // Update the active signals array based on checkbox state
+                // Update the active inputs array based on checkbox state
                 if (isChecked) {
-                    // Add signal if not already present (only if it's a valid signal)
-                    if (!activeSignals.includes(signalName) && ['signal1', 'signal2', 'signal3', 'signal4', 'signal5', 'signal6'].includes(signalName)) {
-                        activeSignals.push(signalName);
+                    // Add input if not already present (only if it's a valid input)
+                    if (!activeInputs.includes(inputName) && ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'].includes(inputName)) {
+                        activeInputs.push(inputName);
                     }
                 } else {
-                    // Remove signal from active list
-                    activeSignals = activeSignals.filter(s => s !== signalName);
+                    // Remove input from active list
+                    activeInputs = activeInputs.filter(s => s !== inputName);
                 }
 
-                // Sort signals to maintain order (signal1, signal2, etc.)
-                activeSignals.sort();
+                // Sort inputs to maintain order (input1, input2, etc.)
+                activeInputs.sort();
 
-                // Create new active_alert string - only includes checked signals
-                // If no signals are checked, send empty string
-                const newActiveAlert = activeSignals.length > 0 ? activeSignals.join(',') : '';
+                // Create new active_alert string - only includes checked inputs
+                // If no inputs are checked, send empty string
+                const newActiveAlert = activeInputs.length > 0 ? activeInputs.join(',') : '';
 
                 // Clear previous form fields
                 while (hiddenCustomAlertForm.firstChild) {
@@ -7123,7 +7258,7 @@
                     setTimeout(() => {
                         loadCustomAlerts();
                         // Re-enable checkboxes
-                        isSignalUpdateInProgress = false;
+                        isInputUpdateInProgress = false;
                     }, 1000);
                 };
 
@@ -7132,7 +7267,7 @@
                     if (isSignalUpdateInProgress) {
                         loadCustomAlerts();
                         // Re-enable checkboxes
-                        isSignalUpdateInProgress = false;
+                        isInputUpdateInProgress = false;
                     }
                 }, 2000);
             } catch (error) {
@@ -7356,6 +7491,76 @@
                 alert('Error deleting Support ID');
             }
         }
+
+        // ============================================
+        // COLOR PICKER FUNCTIONS
+        // ============================================
+        function openColorPickerModal() {
+            const modal = document.getElementById('colorPickerModal');
+            modal.style.display = 'flex';
+            
+            // Initialize color input and display
+            const colorInput = document.getElementById('colorInput');
+            const hexDisplay = document.getElementById('hexColorDisplay');
+            
+            // Update hex display when color changes
+            colorInput.addEventListener('input', function() {
+                hexDisplay.value = this.value.toUpperCase();
+            });
+            
+            // Add click handlers to quick colors
+            document.querySelectorAll('.quick-color').forEach(colorDiv => {
+                colorDiv.onclick = function() {
+                    const color = this.getAttribute('data-color');
+                    colorInput.value = color;
+                    hexDisplay.value = color.toUpperCase();
+                };
+            });
+        }
+
+        function closeColorPickerModal() {
+            const modal = document.getElementById('colorPickerModal');
+            modal.style.display = 'none';
+            
+            // Hide copy message
+            document.getElementById('colorCopyMsg').style.display = 'none';
+        }
+
+        function copyHexColor() {
+            const hexDisplay = document.getElementById('hexColorDisplay');
+            const hexValue = hexDisplay.value;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(hexValue).then(() => {
+                // Show success message
+                const msg = document.getElementById('colorCopyMsg');
+                msg.style.display = 'block';
+                
+                // Hide message after 2 seconds
+                setTimeout(() => {
+                    msg.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error copying to clipboard:', err);
+                // Fallback method
+                hexDisplay.select();
+                document.execCommand('copy');
+                
+                const msg = document.getElementById('colorCopyMsg');
+                msg.style.display = 'block';
+                setTimeout(() => {
+                    msg.style.display = 'none';
+                }, 2000);
+            });
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('colorPickerModal');
+            if (event.target === modal) {
+                closeColorPickerModal();
+            }
+        });
 
     </script>
 </body>
