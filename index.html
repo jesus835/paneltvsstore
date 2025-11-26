@@ -4205,6 +4205,7 @@
         }
 
         // Function to get custom status text (STATUS FALSE/TRUE) for a device
+        // Retorna objeto: { text: string, color: string|null }
         function getCustomStatusText(deviceId, value, fieldName = null) {
             try {
                 // Handle boolean values directly
@@ -4236,20 +4237,38 @@
                 if (!customFieldNamesCache || !customFieldNamesCache[deviceId]) {
                     // If no custom config, return default based on value
                     console.log(`⚠️ No custom config for device ${deviceId}, using default: ${isTrue ? 'ALERT' : 'NORMAL'}`);
-                    return isTrue ? 'ALERT' : 'NORMAL';
+                    return { text: isTrue ? 'ALERT' : 'NORMAL', color: null };
                 }
 
                 const deviceData = customFieldNamesCache[deviceId];
                 
-                // NUEVO: Si el fieldName tiene formato "NOMBRE/TRUE/FALSE", usar esos valores
+                // NUEVO: Si el fieldName tiene formato "NOMBRE/TRUE/FALSE/COLOR", usar esos valores
                 if (fieldName) {
                     const upperFieldName = fieldName.toUpperCase();
                     let customFieldValue = deviceData[upperFieldName] || deviceData[fieldName] || deviceData[fieldName.toLowerCase()];
                     
                     if (customFieldValue && typeof customFieldValue === 'string' && customFieldValue.includes('/')) {
                         const parts = customFieldValue.split('/');
-                        if (parts.length === 3) {
-                            // Formato: NOMBRE/TRUE/FALSE
+                        
+                        // Formato con color: NOMBRE/TRUE/FALSE/COLOR (4 partes)
+                        if (parts.length === 4) {
+                            const customTrue = parts[1].trim();
+                            const customFalse = parts[2].trim();
+                            const customColor = parts[3].trim();
+                            
+                            console.log(`🎨 Using field-specific format with color for ${fieldName}: TRUE="${customTrue}", FALSE="${customFalse}", COLOR="${customColor}"`);
+                            
+                            if (isTrue && customTrue) {
+                                console.log(`✅ Using field-specific STATUS_TRUE with color: ${customTrue} (${customColor})`);
+                                return { text: customTrue, color: customColor };
+                            }
+                            if (isFalse && customFalse) {
+                                console.log(`✅ Using field-specific STATUS_FALSE with color: ${customFalse} (${customColor})`);
+                                return { text: customFalse, color: customColor };
+                            }
+                        }
+                        // Formato sin color: NOMBRE/TRUE/FALSE (3 partes)
+                        else if (parts.length === 3) {
                             const customTrue = parts[1].trim();
                             const customFalse = parts[2].trim();
                             
@@ -4257,11 +4276,11 @@
                             
                             if (isTrue && customTrue) {
                                 console.log(`✅ Using field-specific STATUS_TRUE: ${customTrue}`);
-                                return customTrue;
+                                return { text: customTrue, color: null };
                             }
                             if (isFalse && customFalse) {
                                 console.log(`✅ Using field-specific STATUS_FALSE: ${customFalse}`);
-                                return customFalse;
+                                return { text: customFalse, color: null };
                             }
                         }
                     }
@@ -4272,24 +4291,24 @@
                 // If value is true and there's custom STATUS_TRUE text, use it
                 if (isTrue && deviceData['STATUS_TRUE']) {
                     console.log(`✅ Using custom STATUS_TRUE: ${deviceData['STATUS_TRUE']}`);
-                    return deviceData['STATUS_TRUE'];
+                    return { text: deviceData['STATUS_TRUE'], color: null };
                 }
 
                 // If value is false and there's custom STATUS_FALSE text, use it
                 if (isFalse && deviceData['STATUS_FALSE']) {
                     console.log(`✅ Using custom STATUS_FALSE: ${deviceData['STATUS_FALSE']}`);
-                    return deviceData['STATUS_FALSE'];
+                    return { text: deviceData['STATUS_FALSE'], color: null };
                 }
 
                 // Fallback to default
                 console.log(`⚠️ No custom text found, using default: ${isTrue ? 'ALERT' : 'NORMAL'}`);
-                return isTrue ? 'ALERT' : 'NORMAL';
+                return { text: isTrue ? 'ALERT' : 'NORMAL', color: null };
 
             } catch (error) {
                 console.error(`Error getting custom status text for ${deviceId}:`, error);
                 const valueStr = String(value).toLowerCase().trim();
                 const isTrue = valueStr === 'true' || valueStr === '1' || valueStr === 'yes' || valueStr === 'alerta' || valueStr === 'active' || valueStr === 'on';
-                return isTrue ? 'ALERT' : 'NORMAL';
+                return { text: isTrue ? 'ALERT' : 'NORMAL', color: null };
             }
         }
 
@@ -4554,24 +4573,26 @@
                                 if (isInfoField(fieldKey)) {
                                     // Info fields (YES/NO) - use custom status text
                                     const isYes = value === true || value === 'true';
-                                    const customStatusText = getCustomStatusText(deviceId, value, fieldKey);
+                                    const statusObj = getCustomStatusText(deviceId, value, fieldKey);
+                                    const statusColor = statusObj.color || (isYes ? '#e74c3c' : '#27ae60');
                                     statusHTML += `
                                         <div class="status-item" style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
                                             <span>${displayName}</span>
-                                            <span class="${isYes ? 'true' : 'false'}" style="color: ${isYes ? '#e74c3c' : '#27ae60'}; font-weight: 600;">
-                                                ${customStatusText}
+                                            <span class="${isYes ? 'true' : 'false'}" style="color: ${statusColor}; font-weight: 600;">
+                                                ${statusObj.text}
                                             </span>
                                         </div>
                                     `;
                                 } else {
                                     // Alarm fields (true = alarm, false = normal) - use custom status text
                                     const isAlarm = value === true || value === 'true';
-                                    const customStatusText = getCustomStatusText(deviceId, value, fieldKey);
+                                    const statusObj = getCustomStatusText(deviceId, value, fieldKey);
+                                    const statusColor = statusObj.color || (isAlarm ? '#e74c3c' : '#27ae60');
                                     statusHTML += `
                                         <div class="status-item" style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef; ${isAlarm ? 'border: 2px solid #e74c3c; border-radius: 5px; background-color: #fdf2f2;' : ''}">
                                             <span>${displayName}</span>
-                                            <span class="${isAlarm ? 'true' : 'false'}" style="color: ${isAlarm ? '#e74c3c' : '#27ae60'}; font-weight: 600;">
-                                                ${customStatusText}
+                                            <span class="${isAlarm ? 'true' : 'false'}" style="color: ${statusColor}; font-weight: 600;">
+                                                ${statusObj.text}
                                             </span>
                                         </div>
                                     `;
