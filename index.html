@@ -7,6 +7,8 @@
     <meta name="description" content="Codex Panel - Smart elevator monitoring dashboard">
     <meta name="author" content="Codex Panel">
     <meta name="theme-color" content="#1a1a2e">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cdnjs.cloudflare.com https://script.google.com https://script.googleusercontent.com;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Codex Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4191,11 +4193,19 @@
                 customName = customFieldNamesCache[deviceId][fieldName.toLowerCase()];
             }
 
+            // NUEVO: Si el nombre personalizado tiene formato "NOMBRE/TRUE/FALSE", extraer solo el nombre
+            if (customName && typeof customName === 'string' && customName.includes('/')) {
+                const parts = customName.split('/');
+                if (parts.length >= 1) {
+                    return parts[0].trim(); // Retornar solo el nombre (primera parte)
+                }
+            }
+
             return customName || defaultName;
         }
 
         // Function to get custom status text (STATUS FALSE/TRUE) for a device
-        function getCustomStatusText(deviceId, value) {
+        function getCustomStatusText(deviceId, value, fieldName = null) {
             try {
                 // Handle boolean values directly
                 let isTrue = false;
@@ -4230,6 +4240,33 @@
                 }
 
                 const deviceData = customFieldNamesCache[deviceId];
+                
+                // NUEVO: Si el fieldName tiene formato "NOMBRE/TRUE/FALSE", usar esos valores
+                if (fieldName) {
+                    const upperFieldName = fieldName.toUpperCase();
+                    let customFieldValue = deviceData[upperFieldName] || deviceData[fieldName] || deviceData[fieldName.toLowerCase()];
+                    
+                    if (customFieldValue && typeof customFieldValue === 'string' && customFieldValue.includes('/')) {
+                        const parts = customFieldValue.split('/');
+                        if (parts.length === 3) {
+                            // Formato: NOMBRE/TRUE/FALSE
+                            const customTrue = parts[1].trim();
+                            const customFalse = parts[2].trim();
+                            
+                            console.log(`🔍 Using field-specific format for ${fieldName}: TRUE="${customTrue}", FALSE="${customFalse}"`);
+                            
+                            if (isTrue && customTrue) {
+                                console.log(`✅ Using field-specific STATUS_TRUE: ${customTrue}`);
+                                return customTrue;
+                            }
+                            if (isFalse && customFalse) {
+                                console.log(`✅ Using field-specific STATUS_FALSE: ${customFalse}`);
+                                return customFalse;
+                            }
+                        }
+                    }
+                }
+                
                 console.log(`🔍 Custom status text for ${deviceId}: value=${value} (${typeof value}), isTrue=${isTrue}, isFalse=${isFalse}, STATUS_TRUE=${deviceData['STATUS_TRUE']}, STATUS_FALSE=${deviceData['STATUS_FALSE']}`);
 
                 // If value is true and there's custom STATUS_TRUE text, use it
@@ -4517,7 +4554,7 @@
                                 if (isInfoField(fieldKey)) {
                                     // Info fields (YES/NO) - use custom status text
                                     const isYes = value === true || value === 'true';
-                                    const customStatusText = getCustomStatusText(deviceId, value);
+                                    const customStatusText = getCustomStatusText(deviceId, value, fieldKey);
                                     statusHTML += `
                                         <div class="status-item" style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef;">
                                             <span>${displayName}</span>
@@ -4529,7 +4566,7 @@
                                 } else {
                                     // Alarm fields (true = alarm, false = normal) - use custom status text
                                     const isAlarm = value === true || value === 'true';
-                                    const customStatusText = getCustomStatusText(deviceId, value);
+                                    const customStatusText = getCustomStatusText(deviceId, value, fieldKey);
                                     statusHTML += `
                                         <div class="status-item" style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e9ecef; ${isAlarm ? 'border: 2px solid #e74c3c; border-radius: 5px; background-color: #fdf2f2;' : ''}">
                                             <span>${displayName}</span>
@@ -7281,16 +7318,30 @@
         // Edit Custom Alert - Load data into form
         async function editCustomAlert(deviceId) {
             try {
+                console.log('🔍 Editing custom alert for device:', deviceId);
+                
                 // Fetch all custom alerts
                 const response = await fetch(CUSTOM_FIELD_NAMES_API_URL);
                 const result = await response.json();
 
+                console.log('📋 API Response:', result);
+                console.log('📋 API Success:', result.success);
+                console.log('📋 API Data:', result.data);
+
                 if (result.success && result.data && Array.isArray(result.data)) {
+                    console.log('✅ Data is valid array with', result.data.length, 'items');
+                    
                     // Find the device
-                    const device = result.data.find(item => item.id === deviceId);
+                    const device = result.data.find(item => {
+                        console.log('🔍 Comparing:', item.id, '===', deviceId, '?', item.id === deviceId);
+                        return item.id === deviceId;
+                    });
+                    
+                    console.log('📦 Found device:', device);
                     
                     if (!device) {
-                        alert(`Device ${deviceId} not found`);
+                        alert(`Device ${deviceId} not found in API response`);
+                        console.error('❌ Device not found. Available devices:', result.data.map(d => d.id));
                         return;
                     }
 
@@ -7305,17 +7356,31 @@
                     document.getElementById('customAlertStatusFalse').value = device.status_false || '';
                     document.getElementById('customAlertStatusTrue').value = device.status_true || '';
 
-                    // Set active signals checkboxes
+                    console.log('✅ Form fields filled');
+
+                    // Set active signals checkboxes (IDs are activeInput1, activeInput2, etc.)
                     const activeSignals = device.active_alert 
                         ? device.active_alert.split(',').map(s => s.trim()).filter(s => s)
                         : [];
                     
-                    document.getElementById('activeSignal1').checked = activeSignals.includes('signal1');
-                    document.getElementById('activeSignal2').checked = activeSignals.includes('signal2');
-                    document.getElementById('activeSignal3').checked = activeSignals.includes('signal3');
-                    document.getElementById('activeSignal4').checked = activeSignals.includes('signal4');
-                    document.getElementById('activeSignal5').checked = activeSignals.includes('signal5');
-                    document.getElementById('activeSignal6').checked = activeSignals.includes('signal6');
+                    console.log('📡 Active signals:', activeSignals);
+                    
+                    // Corregido: usar activeInput1-6 en lugar de activeSignal1-6
+                    const input1Checkbox = document.getElementById('activeInput1');
+                    const input2Checkbox = document.getElementById('activeInput2');
+                    const input3Checkbox = document.getElementById('activeInput3');
+                    const input4Checkbox = document.getElementById('activeInput4');
+                    const input5Checkbox = document.getElementById('activeInput5');
+                    const input6Checkbox = document.getElementById('activeInput6');
+                    
+                    if (input1Checkbox) input1Checkbox.checked = activeSignals.includes('signal1') || activeSignals.includes('input1');
+                    if (input2Checkbox) input2Checkbox.checked = activeSignals.includes('signal2') || activeSignals.includes('input2');
+                    if (input3Checkbox) input3Checkbox.checked = activeSignals.includes('signal3') || activeSignals.includes('input3');
+                    if (input4Checkbox) input4Checkbox.checked = activeSignals.includes('signal4') || activeSignals.includes('input4');
+                    if (input5Checkbox) input5Checkbox.checked = activeSignals.includes('signal5') || activeSignals.includes('input5');
+                    if (input6Checkbox) input6Checkbox.checked = activeSignals.includes('signal6') || activeSignals.includes('input6');
+
+                    console.log('✅ Checkboxes set');
 
                     // Show the form
                     const formElement = document.getElementById('customAlertForm');
@@ -7323,13 +7388,19 @@
                         formElement.style.display = 'block';
                         // Scroll to form
                         formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        console.log('✅ Form displayed and scrolled into view');
+                    } else {
+                        console.error('❌ customAlertForm element not found');
                     }
                 } else {
-                    alert('Error loading device data');
+                    console.error('❌ Invalid API response structure');
+                    console.error('Result:', result);
+                    alert('Error loading device data: Invalid API response');
                 }
             } catch (error) {
-                console.error('Error loading device for edit:', error);
-                alert('Error loading device data');
+                console.error('❌ Error loading device for edit:', error);
+                console.error('Error details:', error.message, error.stack);
+                alert(`Error loading device data: ${error.message}`);
             }
         }
 
