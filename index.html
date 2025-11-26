@@ -5747,7 +5747,8 @@
 
         // Check if user is already logged in (optional - using localStorage)
         document.addEventListener('DOMContentLoaded', function () {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            // LOGIN DESHABILITADO - Siempre entrar como logueado
+            const isLoggedIn = true; // Antes: localStorage.getItem('isLoggedIn') === 'true';
             setAuthState(isLoggedIn);
         });
 
