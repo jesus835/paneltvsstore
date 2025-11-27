@@ -1636,6 +1636,21 @@
                 </div>
 
             </div>
+
+            <!-- Daily Alerts Counter -->
+            <div class="assignments-card" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3>Daily Alerts</h3>
+                </div>
+                <div style="padding: 30px; text-align: center;">
+                    <div style="font-size: 48px; font-weight: 700; color: #667eea; margin-bottom: 10px;" id="dailyAlertsCount">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div style="font-size: 14px; color: #666; font-weight: 500;">
+                        Alerts sent today
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Plan Required Modal -->
@@ -4924,6 +4939,14 @@
             }
         }
 
+        // Update daily alerts counter
+        function updateDailyAlertsCounter(count) {
+            const counterElement = document.getElementById('dailyAlertsCount');
+            if (counterElement) {
+                counterElement.innerHTML = count;
+            }
+        }
+
         // Render recent activity events
         function renderRecentActivity(events, deviceToBuildingMap = {}) {
             const recentActivityList = document.getElementById('recentActivityList');
@@ -5052,6 +5075,7 @@
                     if (cachedData && cachedTimestamp) {
                         try {
                             const events = JSON.parse(cachedData);
+                            updateDailyAlertsCounter(events.length);
                             renderRecentActivity(events, deviceToBuildingMap);
                         } catch (e) {
                             console.error('Error parsing cached activity:', e);
@@ -5086,6 +5110,7 @@
                     if (!useCache || !localStorage.getItem('dashboard_recentActivity')) {
                         recentActivityList.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">No activity today</p>';
                     }
+                    updateDailyAlertsCounter(0);
                     return;
                 }
 
@@ -5114,6 +5139,9 @@
                 // Save to cache
                 localStorage.setItem('dashboard_recentActivity', JSON.stringify(sortedData));
                 localStorage.setItem('dashboard_recentActivity_timestamp', Date.now().toString());
+
+                // Update daily alerts counter
+                updateDailyAlertsCounter(sortedData.length);
 
                 // Render events with building names mapping
                 renderRecentActivity(sortedData, deviceToBuildingMap);
