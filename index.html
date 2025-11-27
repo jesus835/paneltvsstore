@@ -3176,16 +3176,25 @@
                 if (!companyName) return;
 
                 const loadingLogo = document.getElementById('loadingLogoText');
-                if (loadingLogo) {
-                    // Split company name - take first word before space as main, rest as highlight
-                    const nameParts = companyName.split(' ');
-                    if (nameParts.length > 1) {
-                        const mainName = nameParts[0];
-                        const highlightName = nameParts.slice(1).join(' ');
-                        loadingLogo.innerHTML = `${mainName}<span class="highlight"> ${highlightName}</span>`;
-                    } else {
-                        loadingLogo.innerHTML = `${companyName}<span class="highlight"></span>`;
+                if (!loadingLogo) return;
+
+                // Limpiar el nombre eliminando códigos de color (formato: TEXTO#CODIGO)
+                const cleanName = companyName.split(/\s+/).map(word => {
+                    // Si la palabra contiene #, tomar solo la parte antes del #
+                    if (word.includes('#')) {
+                        return word.split('#')[0];
                     }
+                    return word;
+                }).join(' ');
+
+                // Split company name - take first word before space as main, rest as highlight
+                const nameParts = cleanName.split(' ');
+                if (nameParts.length > 1) {
+                    const mainName = nameParts[0];
+                    const highlightName = nameParts.slice(1).join(' ');
+                    loadingLogo.innerHTML = `${mainName}<span class="highlight"> ${highlightName}</span>`;
+                } else {
+                    loadingLogo.innerHTML = `${cleanName}<span class="highlight"></span>`;
                 }
             }
 
